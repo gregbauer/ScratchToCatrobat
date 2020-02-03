@@ -257,6 +257,7 @@ class _ScratchToCatrobat(object):
         "deleteLine:ofList:": catbricks.DeleteItemOfUserListBrick,
         "setLine:ofList:to:": catbricks.ReplaceItemInUserListBrick,
         "contentsOfList:": None,
+        "deleteAllOfList:": None,
         #"showList:": catbricks.*, # TODO: implement this as soon as Catrobat supports this...
         #"hideList:": catbricks.*, # TODO: implement this as soon as Catrobat supports this...
 
@@ -1672,6 +1673,26 @@ class _BlocksConversionTraverser(scratch.AbstractBlocksTraverser):
         assert user_list is not None
         list_formula_element = catformula.FormulaElement(catElementType.USER_LIST, list_name, None)
         return list_formula_element
+
+    @_register_handler(_block_name_to_handler_map, "deleteAllOfList:")
+    def _convert_delete_all_of_list_block(self):
+        list_name = self.arguments[0]
+        user_list = catrobat.find_global_or_sprite_user_list_by_name(self.scene, self.sprite, list_name)
+        assert user_list is not None
+
+        list_name_element = catformula.FormulaElement(catElementType.USER_LIST, list_name, None)
+        list_length_element = catformula.FormulaElement(catElementType.FUNCTION, str(catformula.Functions.NUMBER_OF_ITEMS), None)
+        list_length_element.setLeftChild(list_name_element)
+        list_length_formula = catformula.Formula(list_length_element)
+
+        loop_start_brick = catbricks.RepeatBrick(list_length_formula)
+
+        item_to_delete_formula = catrobat.create_formula_with_value(1)
+        delete_element_brick = catbricks.DeleteItemOfUserListBrick(item_to_delete_formula, user_list)
+
+        loop_start_brick.loopBricks.add(delete_element_brick)
+
+        return loop_start_brick
 
     @_register_handler(_block_name_to_handler_map, "stringLength:")
     def _convert_string_length_block(self):

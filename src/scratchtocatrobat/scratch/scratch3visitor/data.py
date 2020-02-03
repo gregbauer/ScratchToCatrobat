@@ -90,4 +90,8 @@ def visitContentsoflist(blockcontext):
     list = block.fields["LIST"][0]
     return ["contentsOfList:", list]
     #TODO: same as with variable value, we only get the id of list
-    
+
+def visitDeletealloflist(blockcontext):
+    block = blockcontext.block
+    list = block.fields["LIST"][0]
+    return ["deleteAllOfList:", list]

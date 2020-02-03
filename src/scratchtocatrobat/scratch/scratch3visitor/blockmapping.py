@@ -137,6 +137,7 @@ visitormap = {
     "data_showlist" : data.visitShowlist,
     "data_hidelist" : data.visitHidelist,
     "data_contentsoflist" : data.visitContentsoflist,
+    "data_deletealloflist" : data.visitDeletealloflist,
 
     "looks_costume" : looks.visitCostume,
     "looks_backdrops" : looks.visitBackdrops,
